@@ -8,5 +8,12 @@
     <artifactId>kafkalike</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>top.dannystone</groupId>
+            <artifactId>bizsocket-rx2</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
