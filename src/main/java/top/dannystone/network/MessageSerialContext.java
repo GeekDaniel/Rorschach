@@ -18,7 +18,7 @@ public class MessageSerialContext extends AbstractSerialContext {
     private static final String TAG = MessageSerialContext.class.getSimpleName();
 
     private MessagePacket messagePacket;
-    private int[] orderIdArr;
+    private int[] messageIdArr;
     private int[] orderQuerySeqArr;
 
     private Map<Integer,Packet> orderTypeMap = new ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public class MessageSerialContext extends AbstractSerialContext {
                 }
 
                 messagePacket = (MessagePacket) packet;
-                orderIdArr = new int[resultArr.length()];
+                messageIdArr = new int[resultArr.length()];
                 orderQuerySeqArr = new int[resultArr.length()];
                 for (int i = 0;i < resultArr.length();i++) {
                     JSONObject order = resultArr.optJSONObject(i);
@@ -73,7 +73,7 @@ public class MessageSerialContext extends AbstractSerialContext {
                         continue;
                     }
 
-                    orderIdArr[i] = orderId;
+                    messageIdArr[i] = orderId;
                     //发起查询订单类型的查询
                     MessagePacket MessagePacket = buildQueryOrderTypePacket(requestQueue,orderId);
 
@@ -109,7 +109,7 @@ public class MessageSerialContext extends AbstractSerialContext {
 
     @Override
     public Packet processPacket(RequestQueue requestQueue, Packet packet) {
-        if (messagePacket != null && orderIdArr != null && orderTypeMap.size() == orderIdArr.length) {
+        if (messagePacket != null && messageIdArr != null && orderTypeMap.size() == messageIdArr.length) {
             try {
                 JSONObject obj = new JSONObject(messagePacket.getContent());
                 JSONArray resultArr = obj.optJSONArray("result");

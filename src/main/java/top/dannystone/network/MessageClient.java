@@ -10,7 +10,6 @@ import bizsocket.tcp.Request;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okio.ByteString;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;

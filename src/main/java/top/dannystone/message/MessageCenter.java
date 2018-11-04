@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageCenter {
     private static final Set<Topic> topics=Collections.synchronizedSet(new HashSet<Topic>());
     private static final Map<Topic,List<Message>> messageMap=new ConcurrentHashMap<Topic, List<Message>>();
-    public void register(Topic topic,Subscriber subscriber)throws InvalidRegistException{
+    public void regist(Topic topic, Subscriber subscriber)throws InvalidRegistException{
         if(checkRegist(topic,subscriber)){
             topics.add(topic);
         }
