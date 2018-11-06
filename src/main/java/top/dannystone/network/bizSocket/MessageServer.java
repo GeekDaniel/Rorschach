@@ -3,6 +3,8 @@ package top.dannystone.network.bizSocket;
 import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
+import top.dannystone.message.AbstractMessageServerBooter;
+import top.dannystone.message.NodeConfig;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,18 +15,25 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class MessageServer {
+public class MessageServer extends AbstractMessageServerBooter {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
-    public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(9103);
+    @Override
+    public  void doBoot(List<NodeConfig> nodeConfigs) {
 
-        boolean flag = true;
-        while (flag) {
-            Socket socket = serverSocket.accept();
-            ConnectThread connectThread = new ConnectThread(socket);
-            connectThread.start();
+        try {
+            //todo 多节点处理
+            ServerSocket serverSocket = new ServerSocket(nodeConfigs.get(0).getPort());
+            boolean flag = true;
+            while (flag) {
+                Socket socket = serverSocket.accept();
+                ConnectThread connectThread = new ConnectThread(socket);
+                connectThread.start();
+            }
+        }catch (IOException e){
+
         }
+
     }
 
 
