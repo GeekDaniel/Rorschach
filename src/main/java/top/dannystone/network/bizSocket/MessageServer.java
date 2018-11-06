@@ -1,31 +1,24 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Created by tong on 16/9/30.
- */
+
 public class MessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(9103);
 
-        new QuoteThread().start();
         boolean flag = true;
         while (flag) {
             Socket socket = serverSocket.accept();
@@ -34,39 +27,6 @@ public class MessageServer {
         }
     }
 
-    private static class QuoteThread extends Thread {
-        @Override
-        public void run() {
-            List<ConnectThread> connections = connectThreads;
-
-            boolean flag = true;
-            while (flag) {
-                DecimalFormat decimalFormat = new DecimalFormat("0.000");
-                JSONObject params = new JSONObject();
-                try {
-                    params.put("code", "200");
-                    params.put("result", decimalFormat.format(((new Random().nextInt(500) + 4000) * 0.001)));
-                    params.put("lastPrice", decimalFormat.format(((new Random().nextInt(500) + 4000) * 0.001)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                for (ConnectThread connectThread : connections) {
-                    try {
-                        connectThread.writePacket(new MessagePacket(MessageCmd.MESSAGE_TRANSFOR.getValue(), 0, params.toString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    Thread.sleep(new Random().nextInt(5000) + 500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     private static class ConnectThread extends Thread {
         Socket socket;
@@ -113,16 +73,14 @@ public class MessageServer {
 
         private void handleRequest(MessagePacket packet) throws IOException {
             System.out.println("handleRequest: " + packet);
-            MessageCmd cmd = MessageCmd.fromValue(packet.cmd);
-            switch (cmd) {
-                case MESSAGE_TRANSFOR: {
-                    DecimalFormat decimalFormat = new DecimalFormat("0.000");
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("code", "200");
-                    map.put("result", decimalFormat.format(((new Random().nextInt(500) + 4000) * 0.001)));
-                    map.put("lastPrice", decimalFormat.format(((new Random().nextInt(500) + 4000) * 0.001)));
-                    packet.setResponse(map);
-                    writePacket(packet);
+            PacketType packetType = PacketType.fromValue(packet.cmd);
+            switch (packetType) {
+                case HEARTBEAT: {
+                    //todo 后续根据策略再说
+                }
+                break;
+                case BIZ_PACKACT: {
+
                 }
                 break;
                 default:

@@ -1,17 +1,17 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 /**
  * 命令枚举
  */
-public enum MessageCmd {
+public enum PacketType {
     HEARTBEAT(100,"心跳"),
-    MESSAGE_TRANSFOR(200, "消息传输")
+    BIZ_PACKACT(200, "消息传输")
     ;
 
     private int value;
     private String desc;
 
-    MessageCmd(int value, String desc) {
+    PacketType(int value, String desc) {
         this.value = value;
         this.desc = desc;
     }
@@ -24,10 +24,10 @@ public enum MessageCmd {
         return desc;
     }
 
-    public static MessageCmd fromValue(int value) {
-        for (MessageCmd MessageCmd : values()) {
-            if (MessageCmd.getValue() == value) {
-                return MessageCmd;
+    public static PacketType fromValue(int value) {
+        for (PacketType PacketType : values()) {
+            if (PacketType.getValue() == value) {
+                return PacketType;
             }
         }
         return null;
@@ -35,7 +35,7 @@ public enum MessageCmd {
 
     @Override
     public String toString() {
-        return "MessageCmd{" +
+        return "PacketType{" +
                 "value=" + value +
                 ", desc='" + desc + '\'' +
                 '}';

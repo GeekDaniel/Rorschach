@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.core.PacketValidator;
 import bizsocket.tcp.Packet;

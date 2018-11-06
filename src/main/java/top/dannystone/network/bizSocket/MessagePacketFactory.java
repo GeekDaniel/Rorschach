@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.tcp.Packet;
 import bizsocket.tcp.PacketFactory;
@@ -16,7 +16,7 @@ public class MessagePacketFactory extends PacketFactory {
 
     @Override
     public Packet getHeartBeatPacket(Packet reusable) {
-        return new MessagePacket(MessageCmd.HEARTBEAT.getValue(), ByteString.encodeUtf8("{}"));
+        return new MessagePacket(PacketType.HEARTBEAT.getValue(), ByteString.encodeUtf8("{}"));
     }
 
     @Override

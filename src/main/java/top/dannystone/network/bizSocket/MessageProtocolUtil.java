@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import org.json.JSONException;
 import org.json.JSONObject;

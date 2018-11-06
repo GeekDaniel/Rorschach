@@ -9,4 +9,5 @@ package top.dannystone.message;
  */
 public class Message {
     private String message;
+    private MessageType messageType;
 }

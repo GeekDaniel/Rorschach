@@ -8,5 +8,10 @@ package top.dannystone.message;
  * Time: 下午6:14
  */
 public interface MessageService {
+    void register();
+
+    void ack();
+
+
 
 }

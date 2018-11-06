@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.base.JSONRequestConverter;
 import bizsocket.base.JSONResponseConverter;
@@ -33,10 +33,10 @@ public class MessageClient extends AbstractBizSocket {
                 .build());
 
         //增加串行数据的处理(把两个命令返回的数据进行合并)
-        client.addSerialSignal(new SerialSignal(MessageSerialContext.class, MessageCmd.MESSAGE_TRANSFOR.getValue(),
-                new int[]{MessageCmd.MESSAGE_TRANSFOR.getValue(), MessageCmd.MESSAGE_TRANSFOR.getValue()}));
+        client.addSerialSignal(new SerialSignal(MessageSerialContext.class, PacketType.BIZ_PACKACT.getValue(),
+                new int[]{PacketType.BIZ_PACKACT.getValue(), PacketType.BIZ_PACKACT.getValue()}));
 
-        client.getOne2ManyNotifyRouter().addStickyCmd(MessageCmd.MESSAGE_TRANSFOR.getValue(),new MessageBizPacketValidator());
+        client.getOne2ManyNotifyRouter().addStickyCmd(PacketType.BIZ_PACKACT.getValue(),new MessageBizPacketValidator());
 
         client.getInterceptorChain().addInterceptor(new Interceptor() {
             @Override
@@ -72,7 +72,7 @@ public class MessageClient extends AbstractBizSocket {
         }
 
         //注册通知
-        client.subscribe(client, MessageCmd.MESSAGE_TRANSFOR.getValue(), new ResponseHandler() {
+        client.subscribe(client, PacketType.BIZ_PACKACT.getValue(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " responsePacket: " + responsePacket);
@@ -85,7 +85,7 @@ public class MessageClient extends AbstractBizSocket {
         });
 
         String json = "{\"productId\" : \"1\",\"isJuan\" : \"0\",\"type\" : \"2\",\"sl\" : \"1\"}";
-        client.request(new Request.Builder().command(MessageCmd.MESSAGE_TRANSFOR.getValue()).utf8body(json).build(), new ResponseHandler() {
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getValue()).utf8body(json).build(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " attach: " + " responsePacket: " + responsePacket);

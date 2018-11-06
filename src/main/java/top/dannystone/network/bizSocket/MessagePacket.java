@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.tcp.Packet;
 import okio.BufferedSink;
@@ -44,12 +44,12 @@ public class MessagePacket extends Packet {
         this.content = content;
     }
 
-    public void setResponse(Map<String,String> map) {
+    public void setResponse(Map<String, String> map) {
         this.content = MessageServer.map2json(map);
     }
 
     public void setResponse(JSONObject jobj) {
-        this.content =jobj.toString();
+        this.content = jobj.toString();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MessagePacket extends Packet {
 
     @Override
     public String getDescription() {
-        return MessageCmd.fromValue(getCommand()).getDesc();
+        return PacketType.fromValue(getCommand()).getDesc();
     }
 
     @Override

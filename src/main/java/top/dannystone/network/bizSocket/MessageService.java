@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.base.Body;
 import bizsocket.base.Request;

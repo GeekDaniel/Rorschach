@@ -1,4 +1,4 @@
-package top.dannystone.network;
+package top.dannystone.network.bizSocket;
 
 import bizsocket.core.AbstractSerialContext;
 import bizsocket.core.RequestContext;
@@ -47,7 +47,7 @@ public class MessageSerialContext extends AbstractSerialContext {
         } catch (JSONException e) {
             return false;
         }
-        if (packet.getCommand() == MessageCmd.MESSAGE_TRANSFOR.getValue()) {
+        if (packet.getCommand() == PacketType.BIZ_PACKACT.getValue()) {
             if (!MessageProtocolUtil.isSuccessResponsePacket(responsePacket)) {
                 return false;
             }
@@ -99,7 +99,7 @@ public class MessageSerialContext extends AbstractSerialContext {
         }
 
         try {
-            return (MessagePacket) requestQueue.getBizSocket().getPacketFactory().getRequestPacket(new Request.Builder().command(MessageCmd.MESSAGE_TRANSFOR.getValue()).utf8body(params.toString()).build());
+            return (MessagePacket) requestQueue.getBizSocket().getPacketFactory().getRequestPacket(new Request.Builder().command(PacketType.BIZ_PACKACT.getValue()).utf8body(params.toString()).build());
         } catch (Throwable e) {
 
         }
