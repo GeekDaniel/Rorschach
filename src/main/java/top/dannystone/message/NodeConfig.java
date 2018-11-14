@@ -1,5 +1,6 @@
 package top.dannystone.message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * Time: 下午7:08
  */
 @Data
+@AllArgsConstructor
 public class NodeConfig {
     private String ip;
     private int port;

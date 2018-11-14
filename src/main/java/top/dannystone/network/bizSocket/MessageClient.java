@@ -27,16 +27,10 @@ public class MessageClient extends AbstractBizSocket {
     public static void main(String[] args) {
         MessageClient client = new MessageClient(new Configuration.Builder()
                 .host("127.0.0.1")
-                .port(9103)
+                .port(56546)
                 .readTimeout(TimeUnit.SECONDS,30)
                 .heartbeat(60)
                 .build());
-
-        //增加串行数据的处理(把两个命令返回的数据进行合并)
-        client.addSerialSignal(new SerialSignal(MessageSerialContext.class, PacketType.BIZ_PACKACT.getValue(),
-                new int[]{PacketType.BIZ_PACKACT.getValue(), PacketType.BIZ_PACKACT.getValue()}));
-
-        client.getOne2ManyNotifyRouter().addStickyCmd(PacketType.BIZ_PACKACT.getValue(),new MessageBizPacketValidator());
 
         client.getInterceptorChain().addInterceptor(new Interceptor() {
             @Override
@@ -84,8 +78,7 @@ public class MessageClient extends AbstractBizSocket {
             }
         });
 
-        String json = "{\"productId\" : \"1\",\"isJuan\" : \"0\",\"type\" : \"2\",\"sl\" : \"1\"}";
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getValue()).utf8body(json).build(), new ResponseHandler() {
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getValue()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(new Object())).build(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " attach: " + " responsePacket: " + responsePacket);

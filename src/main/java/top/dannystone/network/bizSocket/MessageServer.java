@@ -1,10 +1,12 @@
 package top.dannystone.network.bizSocket;
 
+import com.google.common.collect.Lists;
 import okio.BufferedSink;
 import okio.BufferedSource;
+import okio.ByteString;
 import okio.Okio;
-import top.dannystone.message.AbstractMessageServerBooter;
-import top.dannystone.message.NodeConfig;
+import top.dannystone.cors.server.AbstractMessageServer;
+import top.dannystone.message.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,14 +14,36 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class MessageServer extends AbstractMessageServerBooter {
+public class MessageServer extends AbstractMessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
+    private Queue<Message> messageBuffer = new ConcurrentLinkedQueue();
+
+    class BizSocketMessageCloseableIterator extends MessageCloseableIterator {
+
+        @Override
+        public void close() throws IOException {
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            return messageBuffer.peek() != null;
+        }
+
+        @Override
+        public Message next() {
+            return messageBuffer.poll();
+        }
+    }
+
     @Override
-    public  void doBoot(List<NodeConfig> nodeConfigs) {
+    public void doBoot(List<NodeConfig> nodeConfigs) {
 
         try {
             //todo 多节点处理
@@ -30,12 +54,11 @@ public class MessageServer extends AbstractMessageServerBooter {
                 ConnectThread connectThread = new ConnectThread(socket);
                 connectThread.start();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
 
     }
-
 
     private static class ConnectThread extends Thread {
         Socket socket;
@@ -52,7 +75,6 @@ public class MessageServer extends AbstractMessageServerBooter {
             connectThreads.add(this);
             try {
                 System.out.println("accept: " + socket);
-
                 reader = Okio.buffer(Okio.source(socket.getInputStream()));
                 writer = Okio.buffer(Okio.sink(socket.getOutputStream()));
                 while (isRunning) {
@@ -89,16 +111,21 @@ public class MessageServer extends AbstractMessageServerBooter {
                 }
                 break;
                 case BIZ_PACKACT: {
-
+                    //mock biz message
+                    Message message=new Message();
+                    message.setMessage(String.valueOf(System.currentTimeMillis()));
+                    message.setMessageType(MessageType.MESSAGE_DELIVER);
+                    writePacket(new MessagePacket(PacketType.BIZ_PACKACT.getValue(),ByteString.encodeUtf8(com.alibaba.fastjson.JSONObject.toJSONString(message))));
                 }
                 break;
                 default:
                     break;
-            }
+                }
+
         }
 
         public void writePacket(MessagePacket packet) throws IOException {
-            System.out.println("write packet: " + packet);
+            System.out.println("write packet: " + packet+", from thread:"+Thread.currentThread().getId());
             writer.write(packet.toBytes());
             writer.flush();
         }
@@ -138,5 +165,11 @@ public class MessageServer extends AbstractMessageServerBooter {
             map.put(str.split(":")[0], str.split(":")[1]);
         }
         return map;
+    }
+
+    public static void main(String[] args){
+        MessageServer messageServer=new MessageServer();
+        List<NodeConfig> nodeConfigs=Lists.newArrayList(new NodeConfig("127.0.0.1",56546));
+        messageServer.doBoot(nodeConfigs);
     }
 }
