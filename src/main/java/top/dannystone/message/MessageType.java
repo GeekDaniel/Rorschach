@@ -10,7 +10,8 @@ package top.dannystone.message;
 public enum MessageType {
     HEARTBEAT(1,"心跳"),
     REGISTER(2,"订阅注册"),
-    MESSAGE_DELIVER(3,"业务消息")
+    MESSAGE_DELIVER(3,"业务消息"),
+    ACK(4,"消息确认")
     ;
 
     private int code;
@@ -19,5 +20,13 @@ public enum MessageType {
     MessageType(int code, String dsc) {
         this.code = code;
         this.dsc = dsc;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDsc() {
+        return dsc;
     }
 }

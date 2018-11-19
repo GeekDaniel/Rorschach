@@ -7,7 +7,7 @@ package top.dannystone.message;
  * Date: 2018-11-01
  * Time: 下午11:39
  */
-public class Producer {
+public class Publisher {
 
     public void push(Topic topic,Message message) {
 
