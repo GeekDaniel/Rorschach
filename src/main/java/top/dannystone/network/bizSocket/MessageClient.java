@@ -1,4 +1,5 @@
 package top.dannystone.network.bizSocket;
+import top.dannystone.message.MessageType;
 
 import bizsocket.base.JSONRequestConverter;
 import bizsocket.base.JSONResponseConverter;
@@ -7,10 +8,9 @@ import bizsocket.rx2.BizSocketRxSupport;
 import bizsocket.tcp.Packet;
 import bizsocket.tcp.PacketFactory;
 import bizsocket.tcp.Request;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import okio.ByteString;
-import org.json.JSONObject;
+import top.dannystone.message.Message;
+import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -46,14 +46,6 @@ public class MessageClient extends AbstractBizSocket {
             }
         });
 
-        //创建rxjava请求环境(类似于retrofit)
-        BizSocketRxSupport rxSupport = new BizSocketRxSupport.Builder()
-                .requestConverter(new JSONRequestConverter())
-                .responseConverter(new JSONResponseConverter())
-                .bizSocket(client)
-                .build();
-        MessageService service = rxSupport.create(MessageService.class);
-
         try {
             //连接
             client.connect();
@@ -66,7 +58,7 @@ public class MessageClient extends AbstractBizSocket {
         }
 
         //注册通知
-        client.subscribe(client, PacketType.BIZ_PACKACT.getValue(), new ResponseHandler() {
+        client.subscribe(client, PacketType.BIZ_PACKACT.getCode(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " responsePacket: " + responsePacket);
@@ -78,7 +70,14 @@ public class MessageClient extends AbstractBizSocket {
             }
         });
 
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getValue()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(new Object())).build(), new ResponseHandler() {
+        //init a message
+        Message message=new Message();
+        message.setMessage("hello world!");
+        message.setMessageType(MessageType.REGISTER);
+        message.setMessageId(1);
+
+
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(message)).build(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " attach: " + " responsePacket: " + responsePacket);
@@ -91,29 +90,6 @@ public class MessageClient extends AbstractBizSocket {
         });
 
 
-        String params="HelloWorld";
-
-        service.messageDelivery(params).subscribe(new Observer<JSONObject>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(JSONObject jsonObject) {
-                System.out.println("rx response: " + jsonObject);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
 
         while (true) {
             try {

@@ -6,7 +6,7 @@
 //import org.json.JSONArray;
 //import org.json.JSONException;
 //import org.json.JSONObject;
-//import top.dannystone.network.bizSocket.MessagePacket;
+//import top.dannystone.network.bizSocket.Packet;
 //
 //import java.io.IOException;
 //import java.net.ServerSocket;
@@ -93,7 +93,7 @@
 //                reader = Okio.buffer(Okio.source(socket.getInputStream()));
 //                writer = Okio.buffer(Okio.sink(socket.getOutputStream()));
 //                while (isRunning) {
-//                    MessagePacket packet = MessagePacket.build(reader);
+//                    Packet packet = Packet.build(reader);
 //                    handleRequest(packet);
 //                    try {
 //                        Thread.sleep(500);
@@ -117,7 +117,7 @@
 //            }
 //        }
 //
-//        private void handleRequest(MessagePacket packet) throws IOException {
+//        private void handleRequest(Packet packet) throws IOException {
 //            System.out.println("handleRequest: " + packet);
 //            SampleCmd cmd = SampleCmd.fromValue(packet.cmd);
 //            switch (cmd) {
@@ -205,7 +205,7 @@
 //            }
 //        }
 //
-//        public void writePacket(MessagePacket packet) throws IOException {
+//        public void writePacket(Packet packet) throws IOException {
 //            System.out.println("write packet: " + packet);
 //            writer.write(packet.toBytes());
 //            writer.flush();

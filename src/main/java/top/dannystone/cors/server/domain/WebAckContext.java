@@ -1,7 +1,6 @@
 package top.dannystone.cors.server.domain;
 
 import lombok.Data;
-import top.dannystone.message.Message;
 import top.dannystone.message.NodeConfig;
 
 /**

@@ -17,7 +17,7 @@ public enum MessageType {
     private int code;
     private String dsc;
 
-    MessageType(int code, String dsc) {
+    private MessageType(int code, String dsc) {
         this.code = code;
         this.dsc = dsc;
     }

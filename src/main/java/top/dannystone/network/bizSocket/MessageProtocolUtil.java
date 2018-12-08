@@ -29,7 +29,7 @@ public class MessageProtocolUtil {
     }
 
     //是否是正确的返回
-    public static boolean isSuccessResponsePacket(MessagePacket packet) {
+    public static boolean isSuccessResponsePacket(Packet packet) {
         try {
             int code = MessageProtocolUtil.getResCode(packet.getContent());
             if (code == 200) {

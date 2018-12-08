@@ -1,35 +1,33 @@
 package top.dannystone.network.bizSocket;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import okio.BufferedSink;
 import okio.BufferedSource;
-import okio.ByteString;
 import okio.Okio;
 import top.dannystone.cors.server.AbstractMessageServer;
-import top.dannystone.message.*;
+import top.dannystone.message.Message;
+import top.dannystone.message.MessageIterator;
+import top.dannystone.message.NodeConfig;
+import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
+@Slf4j
 public class MessageServer extends AbstractMessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
-    private Queue<Message> messageBuffer = new ConcurrentLinkedQueue();
 
-    class BizSocketMessageCloseableIterator extends MessageCloseableIterator {
+    static class BizSocketMessageIterator extends MessageIterator {
 
-        @Override
-        public void close() throws IOException {
-
-        }
+        Queue<Message> messageBuffer = new ConcurrentLinkedQueue<>();
 
         @Override
         public boolean hasNext() {
@@ -38,7 +36,12 @@ public class MessageServer extends AbstractMessageServer {
 
         @Override
         public Message next() {
+            //一次性消费
             return messageBuffer.poll();
+        }
+
+        public void add(Message message) {
+            messageBuffer.add(message);
         }
     }
 
@@ -66,6 +69,8 @@ public class MessageServer extends AbstractMessageServer {
         BufferedSource reader;
         BufferedSink writer;
 
+        BizSocketMessageIterator messageIterator = new BizSocketMessageIterator();
+
         public ConnectThread(Socket socket) {
             this.socket = socket;
         }
@@ -78,8 +83,9 @@ public class MessageServer extends AbstractMessageServer {
                 reader = Okio.buffer(Okio.source(socket.getInputStream()));
                 writer = Okio.buffer(Okio.sink(socket.getOutputStream()));
                 while (isRunning) {
-                    MessagePacket packet = MessagePacket.build(reader);
-                    handleRequest(packet);
+                    Packet packet = Packet.build(reader);
+                    handlePacket(packet);
+                    System.out.println("packet:" + packet);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -102,74 +108,30 @@ public class MessageServer extends AbstractMessageServer {
             }
         }
 
-        private void handleRequest(MessagePacket packet) throws IOException {
-            System.out.println("handleRequest: " + packet);
-            PacketType packetType = PacketType.fromValue(packet.cmd);
-            switch (packetType) {
-                case HEARTBEAT: {
-                    //todo 后续根据策略再说
-                }
-                break;
-                case BIZ_PACKACT: {
-                    //mock biz message
-                    Message message=new Message();
-                    message.setMessage(String.valueOf(System.currentTimeMillis()));
-                    message.setMessageType(MessageType.MESSAGE_DELIVER);
-                    writePacket(new MessagePacket(PacketType.BIZ_PACKACT.getValue(),ByteString.encodeUtf8(com.alibaba.fastjson.JSONObject.toJSONString(message))));
-                }
-                break;
-                default:
-                    break;
-                }
+        //                    writePacket(new Packet(PacketType.BIZ_PACKACT.getValue(),ByteString.encodeUtf8(com.alibaba.fastjson.JSONObject.toJSONString(message))));
 
-        }
-
-        public void writePacket(MessagePacket packet) throws IOException {
-            System.out.println("write packet: " + packet+", from thread:"+Thread.currentThread().getId());
+        public void writePacket(Packet packet) throws IOException {
+            System.out.println("write packet: " + packet + ", from thread:" + Thread.currentThread().getId());
             writer.write(packet.toBytes());
             writer.flush();
         }
-    }
 
-    public static String map2json(Map<String, String> map) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        int i = 0;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (i > 0) {
-                sb.append(",");
+        //将Packet 封装成message并添加到迭代器中
+        private void handlePacket(Packet packet) {
+            if (packet == null) {
+                return;
             }
-            sb.append("\"");
-            sb.append(entry.getKey());
-            sb.append("\"");
-            sb.append(":");
-            sb.append("\"");
-            sb.append(entry.getValue());
-            sb.append("\"");
-            i++;
+            if (packet.getCommand() == PacketType.BIZ_PACKACT.getCode()) {
+                Message message = Packet.toMessage(packet);
+                messageIterator.add(message);
+                log.info("message receiced: ", message);
+            }
         }
-        sb.append("}");
-        return sb.toString();
     }
 
-    public static Map<String, String> json2map(String json) {
-        Map<String, String> map = new HashMap<String, String>();
-        StringBuilder sb = new StringBuilder(json);
-        sb.deleteCharAt(0);
-        sb.deleteCharAt(sb.length() - 1);
-
-        String[] keyVale = sb.toString().split(",");
-        //"${key}" : "${value}"
-        for (String str : keyVale) {
-            str = str.replaceAll("\"", "");
-            map.put(str.split(":")[0], str.split(":")[1]);
-        }
-        return map;
-    }
-
-    public static void main(String[] args){
-        MessageServer messageServer=new MessageServer();
-        List<NodeConfig> nodeConfigs=Lists.newArrayList(new NodeConfig("127.0.0.1",56546));
+    public static void main(String[] args) {
+        MessageServer messageServer = new MessageServer();
+        List<NodeConfig> nodeConfigs = Lists.newArrayList(new NodeConfig("127.0.0.1", 56546));
         messageServer.doBoot(nodeConfigs);
     }
 }

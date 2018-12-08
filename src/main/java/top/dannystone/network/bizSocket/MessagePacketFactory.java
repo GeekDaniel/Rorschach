@@ -1,26 +1,26 @@
 package top.dannystone.network.bizSocket;
 
-import bizsocket.tcp.Packet;
 import bizsocket.tcp.PacketFactory;
 import bizsocket.tcp.Request;
 import okio.BufferedSource;
 import okio.ByteString;
+import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.io.IOException;
 
 public class MessagePacketFactory extends PacketFactory {
     @Override
-    public Packet getRequestPacket(Packet reusable,Request request) {
-        return new MessagePacket(request.command(),request.body());
+    public bizsocket.tcp.Packet getRequestPacket(bizsocket.tcp.Packet reusable, Request request) {
+        return new Packet(request.command(),request.body());
     }
 
     @Override
-    public Packet getHeartBeatPacket(Packet reusable) {
-        return new MessagePacket(PacketType.HEARTBEAT.getValue(), ByteString.encodeUtf8("{}"));
+    public bizsocket.tcp.Packet getHeartBeatPacket(bizsocket.tcp.Packet reusable) {
+        return new Packet(PacketType.HEARTBEAT.getCode(), ByteString.encodeUtf8("{}"));
     }
 
     @Override
-    public Packet getRemotePacket(Packet reusable,BufferedSource source) throws IOException {
-        return MessagePacket.build(source);
+    public bizsocket.tcp.Packet getRemotePacket(bizsocket.tcp.Packet reusable, BufferedSource source) throws IOException {
+        return Packet.build(source);
     }
 }
