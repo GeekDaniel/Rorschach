@@ -5,8 +5,7 @@ import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
 import top.dannystone.cors.server.AbstractMessageServer;
-import top.dannystone.message.Message;
-import top.dannystone.message.MessageIterator;
+import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
 import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
@@ -23,25 +22,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class BizSocketMessageServer extends AbstractMessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
+    private static Queue<MessageChannel> messageChannelQueue=new ConcurrentLinkedQueue<>();
 
-    static class BizSocketMessageIterator extends MessageIterator {
-        Queue<Message> messageBuffer = new ConcurrentLinkedQueue<>();
-        @Override
-        public boolean hasNext() {
-            return messageBuffer.peek() != null;
-        }
-        @Override
-        public Message next() {
-            //一次性消费
-            return messageBuffer.poll();
-        }
-        public void add(Message message) {
-            messageBuffer.add(message);
-        }
-    }
+//    static class BizSocketMessageIterator extends MessageIterator {
+//        Queue<Message> messageBuffer = new ConcurrentLinkedQueue<>();
+//        @Override
+//        public boolean hasNext() {
+//            return messageBuffer.peek() != null;
+//        }
+//        @Override
+//        public Message next() {
+//            //一次性消费
+//            return messageBuffer.poll();
+//        }
+//        public void add(Message message) {
+//            messageBuffer.add(message);
+//        }
+//    }
 
     @Override
-    public void doBoot(List<NodeConfig> nodeConfigs) {
+    public Queue<MessageChannel> doBoot(List<NodeConfig> nodeConfigs) {
 
         try {
             //todo 多节点处理
@@ -55,6 +55,7 @@ public class BizSocketMessageServer extends AbstractMessageServer {
         } catch (IOException e) {
 
         }
+        return messageChannelQueue;
 
     }
 
@@ -64,7 +65,6 @@ public class BizSocketMessageServer extends AbstractMessageServer {
         BufferedSource reader;
         BufferedSink writer;
 
-        BizSocketMessageIterator messageIterator = new BizSocketMessageIterator();
 
         public ConnectThread(Socket socket) {
             this.socket = socket;
@@ -115,9 +115,11 @@ public class BizSocketMessageServer extends AbstractMessageServer {
                 return;
             }
             if (packet.getCommand() == PacketType.BIZ_PACKACT.getCode()) {
-                Message message = Packet.toMessage(packet);
-                messageIterator.add(message);
-                log.info("message receiced: ", message);
+                MessageChannel messageChannel = Packet.toMessageChannel(packet);
+                messageChannelQueue.add(messageChannel);
+                log.info("messageChannel:{}", messageChannel);
+//                messageIterator.add(messageChannel);
+                log.info("messageChannel receiced: ", messageChannel);
             }
         }
     }

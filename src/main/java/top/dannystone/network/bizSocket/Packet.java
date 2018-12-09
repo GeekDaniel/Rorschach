@@ -7,6 +7,7 @@ import okio.BufferedSource;
 import okio.ByteString;
 import okio.Okio;
 import top.dannystone.message.Message;
+import top.dannystone.message.MessageChannel;
 import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.io.ByteArrayOutputStream;
@@ -125,6 +126,26 @@ public class Packet extends bizsocket.tcp.Packet {
         return packet;
     }
 
+    public static MessageChannel toMessageChannel(Packet packet) {
+        if (packet == null) {
+            return null;
+        }
+
+        if (packet.getCommand() == PacketType.BIZ_PACKACT.getCode()) {
+            String content = packet.getContent();
+            try {
+                MessageChannel messageChannel = JSONObject.parseObject(content, MessageChannel.class);
+                return messageChannel;
+            } catch (Exception e) {
+                log.error("parse packet to message error :{}", content);
+                return null;
+            }
+        }
+
+        return null;
+
+    }
+
     public static Message toMessage(Packet packet) {
         if (packet == null) {
             return null;
@@ -135,8 +156,8 @@ public class Packet extends bizsocket.tcp.Packet {
             try {
                 Message message = JSONObject.parseObject(content, Message.class);
                 return message;
-            }catch(Exception e){
-                log.error("parse packet to message error :{}", content );
+            } catch (Exception e) {
+                log.error("parse packet to message error :{}", content);
                 return null;
             }
         }

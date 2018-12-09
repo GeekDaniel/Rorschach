@@ -1,4 +1,5 @@
 package top.dannystone.network.bizSocket;
+import top.dannystone.message.MessageChannel;
 import top.dannystone.message.MessageType;
 
 import bizsocket.base.JSONRequestConverter;
@@ -75,9 +76,11 @@ public class MessageClient extends AbstractBizSocket {
         message.setMessage("hello world!");
         message.setMessageType(MessageType.REGISTER);
         message.setMessageId(1);
+        MessageChannel messageChannel=new MessageChannel();
+        messageChannel.setClientId("client1");
+        messageChannel.setMessage(message);
 
-
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(message)).build(), new ResponseHandler() {
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel)).build(), new ResponseHandler() {
             @Override
             public void sendSuccessMessage(int command, ByteString requestBody, Packet responsePacket) {
                 System.out.println("cmd: " + command + " ,requestBody: " + requestBody + " attach: " + " responsePacket: " + responsePacket);
@@ -89,14 +92,5 @@ public class MessageClient extends AbstractBizSocket {
             }
         });
 
-
-
-        while (true) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

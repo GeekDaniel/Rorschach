@@ -2,9 +2,11 @@ package top.dannystone.cors.server;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
 
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +25,14 @@ public class Server {
             if (isAMessageServer) {
                 try {
                     AbstractMessageServer server = (AbstractMessageServer) serverClass.newInstance();
-                    server.boot(nodeConfigs);
+                    Queue<MessageChannel> messageChannelQueue = server.boot(nodeConfigs);
+                    while (true){
+
+                        MessageChannel messageChannel = messageChannelQueue.poll();
+                        if(messageChannel!=null){
+                            log.info("messageChannel",messageChannel );
+                        }
+                    }
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
