@@ -11,6 +11,6 @@ import lombok.Data;
  */
 @Data
 public class MessageChannel {
-    private String clientId;
+    private Topic topic;
     private Message message;
 }

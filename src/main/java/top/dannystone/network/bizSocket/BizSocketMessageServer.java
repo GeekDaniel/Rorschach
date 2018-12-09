@@ -24,21 +24,6 @@ public class BizSocketMessageServer extends AbstractMessageServer {
 
     private static Queue<MessageChannel> messageChannelQueue=new ConcurrentLinkedQueue<>();
 
-//    static class BizSocketMessageIterator extends MessageIterator {
-//        Queue<Message> messageBuffer = new ConcurrentLinkedQueue<>();
-//        @Override
-//        public boolean hasNext() {
-//            return messageBuffer.peek() != null;
-//        }
-//        @Override
-//        public Message next() {
-//            //一次性消费
-//            return messageBuffer.poll();
-//        }
-//        public void add(Message message) {
-//            messageBuffer.add(message);
-//        }
-//    }
 
     @Override
     public Queue<MessageChannel> doBoot(List<NodeConfig> nodeConfigs) {
