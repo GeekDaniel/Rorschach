@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractMessageServer {
     Pattern IP_PATTERN=Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
 
-    public MessageIterator getMessageIterator() {
+    protected MessageIterator getMessageIterator() {
         if(messageIterator ==null){
             throw new RuntimeException("服务端未初始化！");
         }

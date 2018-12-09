@@ -1,6 +1,5 @@
 package top.dannystone.network.bizSocket;
 
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -21,25 +20,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Slf4j
-public class MessageServer extends AbstractMessageServer {
+public class BizSocketMessageServer extends AbstractMessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
 
     static class BizSocketMessageIterator extends MessageIterator {
-
         Queue<Message> messageBuffer = new ConcurrentLinkedQueue<>();
-
         @Override
         public boolean hasNext() {
             return messageBuffer.peek() != null;
         }
-
         @Override
         public Message next() {
             //一次性消费
             return messageBuffer.poll();
         }
-
         public void add(Message message) {
             messageBuffer.add(message);
         }
@@ -108,8 +103,6 @@ public class MessageServer extends AbstractMessageServer {
             }
         }
 
-        //                    writePacket(new Packet(PacketType.BIZ_PACKACT.getValue(),ByteString.encodeUtf8(com.alibaba.fastjson.JSONObject.toJSONString(message))));
-
         public void writePacket(Packet packet) throws IOException {
             System.out.println("write packet: " + packet + ", from thread:" + Thread.currentThread().getId());
             writer.write(packet.toBytes());
@@ -129,9 +122,5 @@ public class MessageServer extends AbstractMessageServer {
         }
     }
 
-    public static void main(String[] args) {
-        MessageServer messageServer = new MessageServer();
-        List<NodeConfig> nodeConfigs = Lists.newArrayList(new NodeConfig("127.0.0.1", 56546));
-        messageServer.doBoot(nodeConfigs);
-    }
+
 }
