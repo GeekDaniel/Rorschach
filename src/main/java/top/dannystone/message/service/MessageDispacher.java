@@ -1,8 +1,7 @@
 package top.dannystone.message.service;
 
+import lombok.extern.slf4j.Slf4j;
 import top.dannystone.message.*;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,15 +10,36 @@ import java.util.List;
  * Date: 2018-12-09
  * Time: 下午9:36
  */
+@Slf4j
 public class MessageDispacher {
-    public void dispatch(MessageChannel messageChannel){
-        Topic topic = messageChannel.getTopic();
-        Message message = messageChannel.getMessage();
-        List<Subscriber> subscribers = MessageCenter.topicSubscriberMap.get(topic);
-        if(subscribers!=null&&subscribers.size()>0){
-           subscribers.stream().forEach((e)->{
-
-           });
+    public void dispatch(MessageChannel messageChannel) {
+        Operation operation = messageChannel.getOperation();
+        Topic topic1 = messageChannel.getTopic();
+        switch (operation) {
+            case REGISTER:
+                doRegister(topic1, Sub);
+                break;
+            case ACK:
+                doAck();
+                break;
+            case MESSAGE_DELIVER:
+                doMessageDeliver();
+                break;
+            default:
+                break;
         }
+
+    }
+
+    private void doRegister(Topic topic, Consumer consumer) {
+
+    }
+
+    private void doAck(Topic topic, Consumer consumer) {
+
+    }
+
+    private void doMessageDeliver(Topic topic, Consumer consumer) {
+
     }
 }

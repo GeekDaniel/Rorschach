@@ -15,26 +15,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageCenter {
     public static final Set<Topic> topics = Collections.synchronizedSet(new HashSet<Topic>());
-    public static final Map<Topic, List<Subscriber>> topicSubscriberMap = new ConcurrentHashMap<Topic, List<Subscriber>>();
+    public static final Map<Topic, List<Consumer>> topicSubscriberMap = new ConcurrentHashMap<Topic, List<Consumer>>();
     public static final Map<Topic, List<Message>> topicMessageMap = new ConcurrentHashMap<Topic, List<Message>>();
-    public static final Map<Subscriber, Long> topicOffsiteMap = new ConcurrentHashMap<Subscriber, Long>();
+    public static final Map<Consumer, Long> topicOffsiteMap = new ConcurrentHashMap<Consumer, Long>();
 
 
     /**
      * 订阅要做的几件事
      * 1.添加一个订阅者
      * @param topic
-     * @param subscriber
+     * @param consumer
      * @throws InvalidRegistException
      */
-    public void subscirbe(Topic topic, Subscriber subscriber) throws InvalidRegistException {
-        if (!checkRegist(topic, subscriber)) {
+    public void subscirbe(Topic topic, Consumer consumer) throws InvalidRegistException {
+        if (!checkRegist(topic, consumer)) {
             throw new InvalidRegistException("缺少合法的Topic或订阅者！");
         }
 
         //添加一个订阅者
-        List<Subscriber> subscribers = topicSubscriberMap.get(topic);
-        subscribers.add(subscriber);
+        List<Consumer> consumers = topicSubscriberMap.get(topic);
+        consumers.add(consumer);
     }
 
     /**
@@ -42,8 +42,8 @@ public class MessageCenter {
      * 1.topic已存在
      * 2.订阅者合法
      */
-    private boolean checkRegist(Topic topic, Subscriber subscriber) {
-        if (StringUtils.isBlank(topic.getName()) || subscriber.getIdentifier() == null) {
+    private boolean checkRegist(Topic topic, Consumer consumer) {
+        if (StringUtils.isBlank(topic.getName()) || consumer.getIdentifier() == null) {
             return false;
         }
         return topics.contains(topic);

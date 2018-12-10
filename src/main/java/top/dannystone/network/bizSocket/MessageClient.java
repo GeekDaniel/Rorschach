@@ -1,11 +1,8 @@
 package top.dannystone.network.bizSocket;
 import top.dannystone.message.MessageChannel;
-import top.dannystone.message.MessageType;
+import top.dannystone.message.Operation;
 
-import bizsocket.base.JSONRequestConverter;
-import bizsocket.base.JSONResponseConverter;
 import bizsocket.core.*;
-import bizsocket.rx2.BizSocketRxSupport;
 import bizsocket.tcp.Packet;
 import bizsocket.tcp.PacketFactory;
 import bizsocket.tcp.Request;
@@ -71,10 +68,10 @@ public class MessageClient extends AbstractBizSocket {
             }
         });
 
-        //init a message
+        //init a content
         Message message=new Message();
-        message.setMessage("hello world!");
-        message.setMessageType(MessageType.REGISTER);
+        message.setContent("hello world!");
+        message.setMessageType(Operation.REGISTER);
         message.setMessageId(1);
         MessageChannel messageChannel=new MessageChannel();
         messageChannel.setClientId("client1");

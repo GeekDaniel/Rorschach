@@ -137,7 +137,7 @@ public class Packet extends bizsocket.tcp.Packet {
                 MessageChannel messageChannel = JSONObject.parseObject(content, MessageChannel.class);
                 return messageChannel;
             } catch (Exception e) {
-                log.error("parse packet to message error :{}", content);
+                log.error("parse packet to content error :{}", content);
                 return null;
             }
         }
@@ -157,7 +157,7 @@ public class Packet extends bizsocket.tcp.Packet {
                 Message message = JSONObject.parseObject(content, Message.class);
                 return message;
             } catch (Exception e) {
-                log.error("parse packet to message error :{}", content);
+                log.error("parse packet to content error :{}", content);
                 return null;
             }
         }

@@ -13,11 +13,7 @@ import java.util.List;
  * Time: 下午11:18
  */
 @Data
-public class Subscriber {
-
-    private Integer identifier;
-
-    private Topic topic;
+public class Consumer {
 
     public List<Message> poll(int offSet){
         List<Message> messages=Lists.newArrayList();

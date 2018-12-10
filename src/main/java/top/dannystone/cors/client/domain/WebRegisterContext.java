@@ -2,7 +2,7 @@ package top.dannystone.cors.client.domain;
 
 import lombok.Data;
 import top.dannystone.message.NodeConfig;
-import top.dannystone.message.Subscriber;
+import top.dannystone.message.Consumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,5 +14,5 @@ import top.dannystone.message.Subscriber;
 @Data
 public class WebRegisterContext {
     private NodeConfig nodeConfig;
-    private Subscriber subscriber;
+    private Consumer consumer;
 }

@@ -11,14 +11,12 @@ import lombok.Data;
  */
 @Data
 public class Message {
-    private String message;
-    private MessageType messageType;
+    private String content;
     private int messageId;
 
     public Message getAckMessageByMessageId(int messageId) {
         Message ACKMESSAGE = new Message();
-        ACKMESSAGE.setMessage("");
-        ACKMESSAGE.setMessageType(MessageType.ACK);
+        ACKMESSAGE.setContent("");
         ACKMESSAGE.setMessageId(messageId);
         return ACKMESSAGE;
     }
