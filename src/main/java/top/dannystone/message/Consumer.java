@@ -15,8 +15,10 @@ import java.util.List;
 @Data
 public class Consumer {
 
-    public List<Message> poll(int offSet){
-        List<Message> messages=Lists.newArrayList();
+    private int id;
+
+    public List<Message> poll(int offSet) {
+        List<Message> messages = Lists.newArrayList();
 
         return messages;
     }

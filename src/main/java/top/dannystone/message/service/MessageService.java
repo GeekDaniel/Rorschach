@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class MessageService {
     List<Message> getLeftMessagesWithOffset(Consumer consumer, long offSet){
-        Topic topic = consumer.getTopic();
-        List<Consumer> consumers = MessageCenter.topicSubscriberMap.get(topic);
-        if(consumers.contains(consumer)){
-            List<Message> messages = MessageCenter.topicMessageMap.get(topic);
-            return messages.subList((int)offSet, messages.size());
-        }
+//        Topic topic = consumer.getTopic();
+//        List<Consumer> consumers = MessageCenter.topicConsumerMap.get(topic);
+//        if(consumers.contains(consumer)){
+//            List<Message> messages = MessageCenter.topicMessageMap.get(topic);
+//            return messages.subList((int)offSet, messages.size());
+//        }
         return Lists.newArrayList();
     }
 

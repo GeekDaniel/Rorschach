@@ -22,5 +22,6 @@ public class MessageChannel {
     private Operation operation;
     private Topic topic;
     private Message message;
+    private Consumer consumer;
     private int pollCount;
 }

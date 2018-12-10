@@ -71,10 +71,8 @@ public class MessageClient extends AbstractBizSocket {
         //init a content
         Message message=new Message();
         message.setContent("hello world!");
-        message.setMessageType(Operation.REGISTER);
         message.setMessageId(1);
         MessageChannel messageChannel=new MessageChannel();
-        messageChannel.setClientId("client1");
         messageChannel.setMessage(message);
 
         client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel)).build(), new ResponseHandler() {
