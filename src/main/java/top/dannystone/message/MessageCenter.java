@@ -20,10 +20,19 @@ public class MessageCenter {
     public static final Map<Subscriber, Long> topicOffsiteMap = new ConcurrentHashMap<Subscriber, Long>();
 
 
+    /**
+     * 订阅要做的几件事
+     * 1.添加一个订阅者
+     * @param topic
+     * @param subscriber
+     * @throws InvalidRegistException
+     */
     public void subscirbe(Topic topic, Subscriber subscriber) throws InvalidRegistException {
         if (!checkRegist(topic, subscriber)) {
             throw new InvalidRegistException("缺少合法的Topic或订阅者！");
         }
+
+        //添加一个订阅者
         List<Subscriber> subscribers = topicSubscriberMap.get(topic);
         subscribers.add(subscriber);
     }

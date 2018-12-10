@@ -27,7 +27,6 @@ public class Server {
                     AbstractMessageServer server = (AbstractMessageServer) serverClass.newInstance();
                     Queue<MessageChannel> messageChannelQueue = server.boot(nodeConfigs);
                     while (true){
-
                         MessageChannel messageChannel = messageChannelQueue.poll();
                         if(messageChannel!=null){
                             log.info("messageChannel",messageChannel );
