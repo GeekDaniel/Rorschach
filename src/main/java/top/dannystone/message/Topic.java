@@ -18,7 +18,7 @@ public class Topic {
     }
 
     public Topic(String name) {
-
+        this.name=name;
     }
 
     @Override

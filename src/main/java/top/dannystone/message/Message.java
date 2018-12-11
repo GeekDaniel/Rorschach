@@ -1,5 +1,6 @@
 package top.dannystone.message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -10,14 +11,13 @@ import lombok.Data;
  * Time: 下午11:21
  */
 @Data
+@AllArgsConstructor
 public class Message {
-    private String content;
     private int messageId;
+    private String content;
 
     public Message getAckMessageByMessageId(int messageId) {
-        Message ACKMESSAGE = new Message();
-        ACKMESSAGE.setContent("");
-        ACKMESSAGE.setMessageId(messageId);
+        Message ACKMESSAGE = new Message(messageId,"");
         return ACKMESSAGE;
     }
 }

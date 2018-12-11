@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.dannystone.exception.ConsumerDuplicateException;
 import top.dannystone.exception.InvalidRegistException;
 import top.dannystone.message.*;
+import top.dannystone.message.domain.DispatchResponse;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class MessageDispacher {
     private static int default_pollCount=10;
     MessageCenter messageCenter = new MessageCenter();
 
-    public void dispatch(MessageChannel messageChannel) {
+    public DispatchResponse dispatch(MessageChannel messageChannel) {
         Operation operation = messageChannel.getOperation();
         Consumer consumer = messageChannel.getConsumer();
         Message message = messageChannel.getMessage();
@@ -28,18 +29,18 @@ public class MessageDispacher {
         switch (operation) {
             case REGISTER:
                 doRegister(topic1, consumer);
-                break;
+                return new DispatchResponse(Operation.REGISTER,null);
             case ACK:
                 doAck();
-                break;
+                return new DispatchResponse(Operation.ACK,null);
             case PRODUCE:
                 doProduce(topic1, message);
-                break;
+                return new DispatchResponse(Operation.PRODUCE,null);
             case CONSUME:
-                doConsume(topic1, consumer,pollCount==0?default_pollCount:pollCount );
-                break;
+                List<Message> messages = doConsume(topic1, consumer, pollCount == 0 ? default_pollCount : pollCount);
+                return new DispatchResponse(Operation.CONSUME,messages);
             default:
-                break;
+                return new DispatchResponse(null,null);
         }
 
     }

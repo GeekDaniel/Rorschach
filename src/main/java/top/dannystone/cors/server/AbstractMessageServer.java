@@ -36,18 +36,18 @@ public abstract class AbstractMessageServer {
      * server初始化 方法
      * @param nodeConfigs
      */
-    public Queue<MessageChannel> boot(List<NodeConfig> nodeConfigs){
+    public void boot(List<NodeConfig> nodeConfigs){
         if(!validateNodeConfig(nodeConfigs)){
             throw new NodeConfigException("节点配置信息错误！");
         }
-        return doBoot(nodeConfigs);
+         doBoot(nodeConfigs);
     }
 
     /**
      * server 初始化实现
      * @param nodeConfigs
      */
-    protected abstract  Queue<MessageChannel>  doBoot(List<NodeConfig> nodeConfigs);
+    protected abstract  void  doBoot(List<NodeConfig> nodeConfigs);
 
 
 }

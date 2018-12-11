@@ -23,4 +23,22 @@ public class Consumer {
         return messages;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Consumer)) {
+            return false;
+        }
+        Consumer consumer = (Consumer) obj;
+
+        return consumer.getId()==this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
 }

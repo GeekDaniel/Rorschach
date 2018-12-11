@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
+import top.dannystone.message.service.MessageDispacher;
 
 import java.util.List;
 import java.util.Queue;
@@ -22,16 +23,12 @@ public class Server {
         try {
             Class<?> serverClass = Class.forName(args[0]);
             boolean isAMessageServer = AbstractMessageServer.class.isAssignableFrom(serverClass);
+
             if (isAMessageServer) {
                 try {
                     AbstractMessageServer server = (AbstractMessageServer) serverClass.newInstance();
-                    Queue<MessageChannel> messageChannelQueue = server.boot(nodeConfigs);
-                    while (true){
-                        MessageChannel messageChannel = messageChannelQueue.poll();
-                        if(messageChannel!=null){
-                            log.info("messageChannel",messageChannel );
-                        }
-                    }
+                    server.boot(nodeConfigs);
+
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {

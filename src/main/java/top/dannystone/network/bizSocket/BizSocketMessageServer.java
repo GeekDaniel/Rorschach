@@ -1,20 +1,23 @@
 package top.dannystone.network.bizSocket;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import okio.BufferedSink;
 import okio.BufferedSource;
+import okio.ByteString;
 import okio.Okio;
 import top.dannystone.cors.server.AbstractMessageServer;
 import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
+import top.dannystone.message.Operation;
+import top.dannystone.message.domain.DispatchResponse;
+import top.dannystone.message.service.MessageDispacher;
 import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -22,11 +25,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class BizSocketMessageServer extends AbstractMessageServer {
     private static final List<ConnectThread> connectThreads = new CopyOnWriteArrayList<ConnectThread>();
 
-    private static Queue<MessageChannel> messageChannelQueue=new ConcurrentLinkedQueue<>();
-
-
     @Override
-    public Queue<MessageChannel> doBoot(List<NodeConfig> nodeConfigs) {
+    public void doBoot(List<NodeConfig> nodeConfigs) {
 
         try {
             //todo 多节点处理
@@ -38,9 +38,7 @@ public class BizSocketMessageServer extends AbstractMessageServer {
                 connectThread.start();
             }
         } catch (IOException e) {
-
         }
-        return messageChannelQueue;
 
     }
 
@@ -49,7 +47,7 @@ public class BizSocketMessageServer extends AbstractMessageServer {
         boolean isRunning = true;
         BufferedSource reader;
         BufferedSink writer;
-
+        MessageDispacher messageDispacher=new MessageDispacher();
 
         public ConnectThread(Socket socket) {
             this.socket = socket;
@@ -64,8 +62,8 @@ public class BizSocketMessageServer extends AbstractMessageServer {
                 writer = Okio.buffer(Okio.sink(socket.getOutputStream()));
                 while (isRunning) {
                     Packet packet = Packet.build(reader);
-                    handlePacket(packet);
                     System.out.println("packet:" + packet);
+                    handlePacket(packet);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -83,7 +81,6 @@ public class BizSocketMessageServer extends AbstractMessageServer {
                     }
                     socket = null;
                 }
-
                 connectThreads.remove(this);
             }
         }
@@ -101,10 +98,15 @@ public class BizSocketMessageServer extends AbstractMessageServer {
             }
             if (packet.getCommand() == PacketType.BIZ_PACKACT.getCode()) {
                 MessageChannel messageChannel = Packet.toMessageChannel(packet);
-                messageChannelQueue.add(messageChannel);
-                log.info("messageChannel:{}", messageChannel);
-//                messageIterator.add(messageChannel);
-                log.info("messageChannel receiced: ", messageChannel);
+                DispatchResponse dispatchResponse = messageDispacher.dispatch(messageChannel);
+                if(dispatchResponse.getOperation()==Operation.CONSUME){
+                    Packet packet1=new Packet(PacketType.BIZ_PACKACT.getCode(),ByteString.encodeUtf8(JSONObject.toJSONString(dispatchResponse.getResponse())));
+                    try {
+                        writePacket(packet1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

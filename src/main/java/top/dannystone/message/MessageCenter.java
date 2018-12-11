@@ -17,11 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 下午11:14
  */
 public class MessageCenter {
-    public static final Set<Topic> topics = Collections.synchronizedSet(new HashSet<Topic>());
+    public static final Set<Topic> topics = Sets.newConcurrentHashSet(Lists.newArrayList(new Topic("topic1")));
     public static final Map<Topic, Set<Consumer>> topicConsumerMap = new ConcurrentHashMap<Topic, Set<Consumer>>();
     public static final Map<Topic, List<Message>> topicMessageMap = new ConcurrentHashMap<Topic, List<Message>>();
     public static final Map<Consumer, Integer> topicOffsiteMap = new ConcurrentHashMap<Consumer, Integer>();
-
 
     /**
      * 订阅要做的几件事
@@ -65,9 +64,9 @@ public class MessageCenter {
 
     public List<Message> doConsume(Topic topic, Consumer consumer, int pollCount) {
         checkConsume(topic, consumer);
-        Integer offSet = topicOffsiteMap.get(topic);
+        int offSet = topicOffsiteMap.get(topic)==null?0:topicOffsiteMap.get(topic);
         List<Message> messages = topicMessageMap.get(topic);
-        int toIndex = (offSet + pollCount)>(messages.size()-1)?(messages.size()-1):(offSet + pollCount);
+        int toIndex = (offSet + pollCount)>(messages.size())?(messages.size()):(offSet + pollCount);
         return messages.subList(offSet, toIndex);
 
     }
@@ -85,7 +84,7 @@ public class MessageCenter {
      * 2.订阅者合法
      */
     private boolean checkSubscribe(Topic topic, Consumer consumer) {
-        if (StringUtils.isBlank(topic.getName()) || consumer.getId() != 0) {
+        if (StringUtils.isBlank(topic.getName()) || consumer.getId() == 0) {
             return false;
         }
         return topics.contains(topic);
