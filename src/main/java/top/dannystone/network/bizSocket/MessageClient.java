@@ -1,13 +1,12 @@
 package top.dannystone.network.bizSocket;
 
-import lombok.extern.slf4j.Slf4j;
-import top.dannystone.message.*;
-
 import bizsocket.core.*;
 import bizsocket.tcp.Packet;
 import bizsocket.tcp.PacketFactory;
 import bizsocket.tcp.Request;
+import lombok.extern.slf4j.Slf4j;
 import okio.ByteString;
+import top.dannystone.message.*;
 import top.dannystone.network.bizSocket.bizsocketenum.PacketType;
 
 import java.util.concurrent.TimeUnit;
@@ -84,8 +83,7 @@ public class MessageClient extends AbstractBizSocket {
         messageChannel.setOperation(Operation.REGISTER);
         Topic topic = new Topic("topic1");
         messageChannel.setTopic(topic);
-        Consumer consumer = new Consumer();
-        consumer.setId(1);
+        Consumer consumer = new Consumer(1);
         messageChannel.setConsumer(consumer);
         client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel)).build(), responseHandler);
 

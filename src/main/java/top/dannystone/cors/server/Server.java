@@ -2,12 +2,9 @@ package top.dannystone.cors.server;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
-import top.dannystone.message.service.MessageDispacher;
 
 import java.util.List;
-import java.util.Queue;
 
 /**
  * Created with IntelliJ IDEA.

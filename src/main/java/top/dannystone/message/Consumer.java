@@ -12,10 +12,17 @@ import java.util.List;
  * Date: 2018-11-01
  * Time: 下午11:18
  */
-@Data
 public class Consumer {
 
     private int id;
+
+    public Consumer(int id){
+        this.id=id;
+    }
+
+    public int getId(){
+        return id;
+    }
 
     public List<Message> poll(int offSet) {
         List<Message> messages = Lists.newArrayList();
