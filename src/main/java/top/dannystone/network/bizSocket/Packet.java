@@ -25,6 +25,7 @@ public class Packet extends bizsocket.tcp.Packet {
     public String content;
 
     public Packet() {
+//        setFlags(1);
     }
 
 

@@ -103,5 +103,13 @@ public class MessageClient extends AbstractBizSocket {
         messageContext3.setPollCount(100);
         client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageContext3)).build(), responseHandler);
 
+        //重复消费
+        MessageContext messageContext4 = new MessageContext();
+        messageContext4.setOperation(Operation.CONSUME);
+        messageContext4.setTopic(topic);
+        messageContext4.setConsumer(consumer);
+        messageContext4.setPollCount(100);
+        messageContext4.setOffSet(0);
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageContext4)).build(), responseHandler);
     }
 }

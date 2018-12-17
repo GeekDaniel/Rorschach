@@ -23,5 +23,6 @@ public class MessageContext {
     private Topic topic;
     private Message message;
     private Consumer consumer;
+    private Integer offSet;
     private int pollCount;
 }

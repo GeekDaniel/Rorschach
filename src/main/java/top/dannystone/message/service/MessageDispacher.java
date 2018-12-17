@@ -24,6 +24,7 @@ public class MessageDispacher {
         Operation operation = messageContext.getOperation();
         Consumer consumer = messageContext.getConsumer();
         Message message = messageContext.getMessage();
+        Integer offSet=messageContext.getOffSet();
         int pollCount = messageContext.getPollCount();
         Topic topic1 = messageContext.getTopic();
         switch (operation) {
@@ -37,7 +38,7 @@ public class MessageDispacher {
                 doProduce(topic1, message);
                 return new DispatchResponse(Operation.PRODUCE,null);
             case CONSUME:
-                List<Message> messages = doConsume(topic1, consumer, pollCount == 0 ? default_pollCount : pollCount);
+                List<Message> messages = doConsume(topic1, consumer,offSet, pollCount == 0 ? default_pollCount : pollCount);
                 return new DispatchResponse(Operation.CONSUME,messages);
             default:
                 return new DispatchResponse(null,null);
@@ -65,7 +66,7 @@ public class MessageDispacher {
         messageCenter.doProduce(topic, message);
     }
 
-    private List<Message> doConsume(Topic topic, Consumer consumer, int pollCount) {
-        return messageCenter.doConsume(topic, consumer, pollCount);
+    private List<Message> doConsume(Topic topic, Consumer consumer,Integer offSet, int pollCount) {
+        return messageCenter.doConsume(topic, consumer,offSet, pollCount);
     }
 }
