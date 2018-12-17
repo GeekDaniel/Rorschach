@@ -79,29 +79,29 @@ public class MessageClient extends AbstractBizSocket {
             }
         };
         //注册
-        MessageChannel messageChannel = new MessageChannel();
-        messageChannel.setOperation(Operation.REGISTER);
+        MessageContext messageContext = new MessageContext();
+        messageContext.setOperation(Operation.REGISTER);
         Topic topic = new Topic("topic1");
-        messageChannel.setTopic(topic);
+        messageContext.setTopic(topic);
         Consumer consumer = new Consumer(1);
-        messageChannel.setConsumer(consumer);
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel)).build(), responseHandler);
+        messageContext.setConsumer(consumer);
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageContext)).build(), responseHandler);
 
         //生产
-        MessageChannel messageChannel2 = new MessageChannel();
-        messageChannel2.setOperation(Operation.PRODUCE);
-        messageChannel2.setTopic(topic);
+        MessageContext messageContext2 = new MessageContext();
+        messageContext2.setOperation(Operation.PRODUCE);
+        messageContext2.setTopic(topic);
         Message message = new top.dannystone.message.Message(1, "hello world!");
-        messageChannel2.setMessage(message);
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel2)).build(), responseHandler);
+        messageContext2.setMessage(message);
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageContext2)).build(), responseHandler);
 
         //消费
-        MessageChannel messageChannel3 = new MessageChannel();
-        messageChannel3.setOperation(Operation.CONSUME);
-        messageChannel3.setTopic(topic);
-        messageChannel3.setConsumer(consumer);
-        messageChannel3.setPollCount(100);
-        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageChannel3)).build(), responseHandler);
+        MessageContext messageContext3 = new MessageContext();
+        messageContext3.setOperation(Operation.CONSUME);
+        messageContext3.setTopic(topic);
+        messageContext3.setConsumer(consumer);
+        messageContext3.setPollCount(100);
+        client.request(new Request.Builder().command(PacketType.BIZ_PACKACT.getCode()).utf8body(com.alibaba.fastjson.JSONObject.toJSONString(messageContext3)).build(), responseHandler);
 
     }
 }

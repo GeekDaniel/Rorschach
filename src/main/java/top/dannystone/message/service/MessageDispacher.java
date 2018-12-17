@@ -20,12 +20,12 @@ public class MessageDispacher {
     private static int default_pollCount=10;
     MessageCenter messageCenter = new MessageCenter();
 
-    public DispatchResponse dispatch(MessageChannel messageChannel) {
-        Operation operation = messageChannel.getOperation();
-        Consumer consumer = messageChannel.getConsumer();
-        Message message = messageChannel.getMessage();
-        int pollCount = messageChannel.getPollCount();
-        Topic topic1 = messageChannel.getTopic();
+    public DispatchResponse dispatch(MessageContext messageContext) {
+        Operation operation = messageContext.getOperation();
+        Consumer consumer = messageContext.getConsumer();
+        Message message = messageContext.getMessage();
+        int pollCount = messageContext.getPollCount();
+        Topic topic1 = messageContext.getTopic();
         switch (operation) {
             case REGISTER:
                 doRegister(topic1, consumer);

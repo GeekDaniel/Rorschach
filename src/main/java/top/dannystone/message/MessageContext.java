@@ -18,7 +18,7 @@ import lombok.Data;
  * Time: 下午8:40
  */
 @Data
-public class MessageChannel {
+public class MessageContext {
     private Operation operation;
     private Topic topic;
     private Message message;

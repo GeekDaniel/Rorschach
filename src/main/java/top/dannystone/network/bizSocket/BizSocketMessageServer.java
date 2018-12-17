@@ -7,7 +7,7 @@ import okio.BufferedSource;
 import okio.ByteString;
 import okio.Okio;
 import top.dannystone.cors.server.AbstractMessageServer;
-import top.dannystone.message.MessageChannel;
+import top.dannystone.message.MessageContext;
 import top.dannystone.message.NodeConfig;
 import top.dannystone.message.Operation;
 import top.dannystone.message.domain.DispatchResponse;
@@ -97,8 +97,8 @@ public class BizSocketMessageServer extends AbstractMessageServer {
                 return;
             }
             if (packet.getCommand() == PacketType.BIZ_PACKACT.getCode()) {
-                MessageChannel messageChannel = Packet.toMessageChannel(packet);
-                DispatchResponse dispatchResponse = messageDispacher.dispatch(messageChannel);
+                MessageContext messageContext = Packet.toMessageChannel(packet);
+                DispatchResponse dispatchResponse = messageDispacher.dispatch(messageContext);
                 if(dispatchResponse.getOperation()==Operation.CONSUME){
                     Packet packet1=new Packet(PacketType.BIZ_PACKACT.getCode(),ByteString.encodeUtf8(JSONObject.toJSONString(dispatchResponse.getResponse())));
                     try {

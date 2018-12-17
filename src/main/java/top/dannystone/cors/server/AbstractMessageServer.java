@@ -1,11 +1,9 @@
 package top.dannystone.cors.server;
 
 import top.dannystone.exception.NodeConfigException;
-import top.dannystone.message.MessageChannel;
 import top.dannystone.message.NodeConfig;
 
 import java.util.List;
-import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
