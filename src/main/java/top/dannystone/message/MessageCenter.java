@@ -3,7 +3,7 @@ package top.dannystone.message;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
-import top.dannystone.common.FirstMeet;
+import top.dannystone.common.suger.FirstMeet;
 import top.dannystone.exception.ConsumerDuplicateException;
 import top.dannystone.exception.InvalidRegistException;
 

@@ -1,4 +1,4 @@
-package top.dannystone.common;
+package top.dannystone.common.suger;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
