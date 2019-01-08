@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date: 2018-12-18
  * Time: 上午1:54
  */
-public class Client {
+public class JedisClient {
     public static void main(String[] args) {
         Jedis jedis = new Jedis("127.0.0.1", 6379, 1000, 1000);
 
@@ -28,13 +28,9 @@ public class Client {
 
     }
 
-    public static Jedis jedis;
+    public static Jedis jedis = new Jedis("127.0.0.1", 6379, 1000, 1000);
 
-    public void init() {
-        jedis = new Jedis("127.0.0.1", 6379, 1000, 1000);
-    }
-
-    public void check() {
+    private void check() {
         if (jedis == null) {
             throw new RuntimeException("jedis 未初始化化！");
         }
@@ -46,9 +42,19 @@ public class Client {
      * @param key
      * @param value
      */
-    public void sadd(String key, String value) {
+    public boolean sadd(String key, String value) {
         check();
-        jedis.sadd(key, value);
+        return jedis.sadd(key, value) == 1;
+    }
+
+    /**
+     * @param key
+     * @param values
+     * @return
+     */
+    public boolean sadd(String key, String[] values) {
+        check();
+        return jedis.sadd(key, values) == 1;
     }
 
     /**
@@ -92,6 +98,23 @@ public class Client {
 //        return "OK".equals(response);
 //    }
 
+    /**
+     * @param key
+     * @return
+     */
+    public String type(String key) {
+        check();
+        return jedis.type(key);
+    }
 
+    public Long lPush(String key, String[] values) {
+        check();
+        return jedis.lpush(key, values);
+    }
+
+    public Long llen(String key) {
+        check();
+        return jedis.llen(key);
+    }
 
 }

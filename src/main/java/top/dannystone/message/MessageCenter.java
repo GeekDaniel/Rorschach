@@ -3,6 +3,9 @@ package top.dannystone.message;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
+import top.dannystone.common.JedisClient.JedisListValueMap;
+import top.dannystone.common.JedisClient.JedisSet;
+import top.dannystone.common.JedisClient.JedisSetValueMap;
 import top.dannystone.common.suger.FirstMeet;
 import top.dannystone.exception.ConsumerDuplicateException;
 import top.dannystone.exception.InvalidRegistException;
@@ -18,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 下午11:14
  */
 public class MessageCenter {
-    public static final Set<Topic> topics = Sets.newConcurrentHashSet(Lists.newArrayList(new Topic("topic1")));
-    public static final Map<Topic, Set<Consumer>> topicConsumerMap = new ConcurrentHashMap<Topic, Set<Consumer>>();
-    public static final Map<Topic, List<Message>> topicMessageMap = new ConcurrentHashMap<Topic, List<Message>>();
+    public static final Set<Topic> topics = new JedisSet();
+    public static final Map<Topic, Set<Consumer>> topicConsumerMap = new JedisSetValueMap();
+    public static final Map<Topic, List<Message>> topicMessageMap = new JedisListValueMap();
     public static final Map<Consumer, Integer> consumerOffsetMap = new ConcurrentHashMap<Consumer, Integer>();
 
     /**
