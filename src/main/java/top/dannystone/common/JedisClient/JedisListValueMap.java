@@ -22,7 +22,7 @@ public class JedisListValueMap extends UnSupportMap {
 
     @Override
     public Object get(Object key) {
-        //todo
+        //todo ? int long
         return jedisClient.lrange(key.toString(), 0, (int) (jedisClient.llen(key.toString()).longValue()));
     }
 

@@ -17,16 +17,6 @@
     </layout>
   </appender>
 
-  <logger name="org.springframework" additivity="false">
-    <level value="warn"/>
-    <appender-ref ref="ConsoleAppender" />
-  </logger>
-
-  <logger name="top.dannystone" additivity="false">
-    <level value="info"/>
-    <appender-ref ref="ConsoleAppender" />
-  </logger>
-
   <root>
     <priority value ="info"/>
     <appender-ref ref="FileAppender" />

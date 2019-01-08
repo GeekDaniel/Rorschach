@@ -16,6 +16,7 @@ import java.util.List;
 @Slf4j
 public class Server {
     public static void main(String[] args) {
+        log.info("Server starting...");
         List<NodeConfig> nodeConfigs = Lists.newArrayList(new NodeConfig("127.0.0.1", 56546));
         try {
             Class<?> serverClass = Class.forName(args[0]);
