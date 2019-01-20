@@ -64,8 +64,8 @@ public class JedisMessageCenter extends AbstractMessageCenter {
         Optional<Integer> offSetOptional = FirstMeet
                 .first(clientOffSet)
                 .then(serverOffSet)
-                .meet(e -> e != null ).get();
-        Integer offset =  offSetOptional.isPresent()?offSetOptional.get():0;
+                .meet(e -> e != null).get();
+        Integer offset = offSetOptional.isPresent() ? offSetOptional.get() : 0;
         int fromIndex = offset;
         //越界检查
         int toIndex = (fromIndex + pollCount);
@@ -74,9 +74,9 @@ public class JedisMessageCenter extends AbstractMessageCenter {
             return easyError();
         }
         //计算真实偏移量
-        toIndex = fromIndex+messages.size();
+        toIndex = fromIndex + messages.size();
         //消费后调整offset
-        JedisClient.hmset(OFFSET,topicConsumer ,String.valueOf(toIndex) );
+        JedisClient.hmset(OFFSET, topicConsumer, String.valueOf(toIndex));
         return messages;
     }
 
@@ -93,7 +93,7 @@ public class JedisMessageCenter extends AbstractMessageCenter {
     }
 
     private boolean checkSubscribed(Topic topic, Consumer consumer) {
-        return JedisClient.smembers(topic.getName()).contains(consumer.getId());
+        return JedisClient.smembers(genKeyWithPrefix(topic,CONSUMER_PREFIX )).contains(String.valueOf(consumer.getId()));
     }
 
 

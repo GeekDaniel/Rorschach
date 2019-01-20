@@ -12,6 +12,6 @@ import top.dannystone.message.Topic;
  */
 public class TopicService {
     void createTopic(Topic topic) {
-        AbstractMessageCenter.topics.add(topic);
+//        AbstractMessageCenter.topics.add(topic);
     }
 }

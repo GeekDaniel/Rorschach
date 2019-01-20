@@ -21,20 +21,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractMessageCenter {
 
-    void subscirbe(Topic topic, Consumer consumer) throws InvalidRegistException, ConsumerDuplicateException{
+    public void subscirbe(Topic topic, Consumer consumer) throws InvalidRegistException, ConsumerDuplicateException{
         throw new UnsupportedOperationException();
     }
 
-    void doProduce(Topic topic, Message message){
+    public void doProduce(Topic topic, Message message){
         throw new UnsupportedOperationException();
     }
 
     //此处的偏移量是指个数而非索引下标。偏移量=索引下标+1
-    List<Message> doConsume(Topic topic, Consumer consumer, Integer clientOffSet, int pollCount){
+    public List<Message> doConsume(Topic topic, Consumer consumer, Integer clientOffSet, int pollCount){
         throw new UnsupportedOperationException();
     }
 
     public List<Message> easyError() {
+        System.out.println("error xxxxxxxxx");
         //目前校验不合法为返回空，后续改为报错
         return Lists.newArrayList();
     }

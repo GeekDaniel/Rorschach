@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class MessageDispacher {
     private static int default_pollCount=10;
-    AbstractMessageCenter messageCenter = new JavaMessageCenter();
+    AbstractMessageCenter messageCenter = new JedisMessageCenter();
 
     public DispatchResponse dispatch(MessageContext messageContext) {
         Operation operation = messageContext.getOperation();

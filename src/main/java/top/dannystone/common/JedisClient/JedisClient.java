@@ -134,7 +134,7 @@ public class JedisClient {
         check();
         //todo
         String value = jedis.hmget(key, field).get(0);
-        return "nil".equals(value)?0:Integer.parseInt(value);
+        return value==null|"nil".equals(value)?0:Integer.parseInt(value);
     }
 
 }
