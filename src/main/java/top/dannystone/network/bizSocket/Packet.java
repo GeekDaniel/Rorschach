@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 @Slf4j
 public class Packet extends bizsocket.tcp.Packet {
 
+    public static final Packet EMPTY=new Packet(0);
     static volatile int currentSeq = 0;
     public int length;//包大小
     public int cmd;//命令号
@@ -49,6 +50,10 @@ public class Packet extends bizsocket.tcp.Packet {
         this.content = content;
     }
 
+
+    public Packet(int seq) {
+        this.seq = seq;
+    }
 
     @Override
     public byte[] toBytes() {

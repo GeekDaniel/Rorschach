@@ -21,6 +21,9 @@ public class MessagePacketFactory extends PacketFactory {
 
     @Override
     public bizsocket.tcp.Packet getRemotePacket(bizsocket.tcp.Packet reusable, BufferedSource source) throws IOException {
+        if(source.exhausted()){
+            return Packet.EMPTY;
+        }
         return Packet.build(source);
     }
 }

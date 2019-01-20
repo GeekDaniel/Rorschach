@@ -16,6 +16,10 @@ import java.util.Set;
  */
 public class JedisSet implements Set {
 
+    public JedisSet(String setName) {
+        this.setName = setName;
+    }
+
     public String getSetName() {
         return setName;
     }
@@ -23,6 +27,7 @@ public class JedisSet implements Set {
     public void setSetName(String setName) {
         this.setName = setName;
     }
+
 
     private String setName;
 

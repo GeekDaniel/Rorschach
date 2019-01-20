@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 下午11:14
  */
 public class MessageCenter {
-    public static final Set<Topic> topics = new JedisSet();
+    public static final Set<Topic> topics = new JedisSet("topics");
     public static final Map<Topic, Set<Consumer>> topicConsumerMap = new JedisSetValueMap();
     public static final Map<Topic, List<Message>> topicMessageMap = new JedisListValueMap();
     public static final Map<Consumer, Integer> consumerOffsetMap = new ConcurrentHashMap<Consumer, Integer>();
@@ -99,7 +99,7 @@ public class MessageCenter {
     }
 
     private boolean checkConsume(Topic topic, Consumer consumer) {
-        if (!checkSubscribe(topic, consumer)) {
+        if (!checkSubscribed(topic, consumer)) {
             return false;
         }
         return topicConsumerMap.get(topic) != null && topicConsumerMap.get(topic).contains(consumer);
@@ -114,7 +114,7 @@ public class MessageCenter {
         if (StringUtils.isBlank(topic.getName()) || consumer.getId() == 0) {
             return false;
         }
-        return topics.contains(topic);
+        return true;
     }
 
     private boolean checkSubscribed(Topic topic, Consumer consumer) {
