@@ -1,6 +1,8 @@
 package top.dannystone.common.JedisClient;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import redis.clients.jedis.Jedis;
 import top.dannystone.message.Consumer;
 
@@ -30,7 +32,7 @@ public class JedisClient {
 
     public static Jedis jedis = new Jedis("127.0.0.1", 6379, 1000, 1000);
 
-    private void check() {
+    private static void check() {
         if (jedis == null) {
             throw new RuntimeException("jedis 未初始化化！");
         }
@@ -42,7 +44,7 @@ public class JedisClient {
      * @param key
      * @param value
      */
-    public boolean sadd(String key, String value) {
+    public static boolean sadd(String key, String value) {
         check();
         return jedis.sadd(key, value) == 1;
     }
@@ -52,7 +54,7 @@ public class JedisClient {
      * @param values
      * @return
      */
-    public boolean sadd(String key, String[] values) {
+    public static boolean sadd(String key, String[] values) {
         check();
         return jedis.sadd(key, values) == 1;
     }
@@ -61,7 +63,7 @@ public class JedisClient {
      * @param key
      * @return
      */
-    public Set<String> smembers(String key) {
+    public static Set<String> smembers(String key) {
         check();
         Set<String> smembers = jedis.smembers(key);
         return smembers;
@@ -74,7 +76,7 @@ public class JedisClient {
      * @param value
      * @return
      */
-    public Long rpush(String key, String value) {
+    public static Long rpush(String key, String value) {
         check();
         return jedis.rpush(key, value);
     }
@@ -87,7 +89,7 @@ public class JedisClient {
      * @param end
      * @return
      */
-    public List<String> lrange(String key, int start, int end) {
+    public static List<String> lrange(String key, int start, int end) {
         check();
         return jedis.lrange(key, start, end);
     }
@@ -102,19 +104,37 @@ public class JedisClient {
      * @param key
      * @return
      */
-    public String type(String key) {
+    public static String type(String key) {
         check();
         return jedis.type(key);
     }
 
-    public Long lPush(String key, String[] values) {
+    public static Long lPush(String key, String[] values) {
         check();
         return jedis.lpush(key, values);
     }
 
-    public Long llen(String key) {
+    public static Long lPush(String key, String value) {
+        check();
+        return jedis.lpush(key, value);
+    }
+
+    public static Long llen(String key) {
         check();
         return jedis.llen(key);
+    }
+
+    public static void hmset(String prefix, String key,String value) {
+        check();
+        ImmutableMap<String, String> of = ImmutableMap.of(key, value);
+        jedis.hmset(prefix, of);
+    }
+
+    public static int hmget(String key, String field) {
+        check();
+        //todo
+        String value = jedis.hmget(key, field).get(0);
+        return "nil".equals(value)?0:Integer.parseInt(value);
     }
 
 }

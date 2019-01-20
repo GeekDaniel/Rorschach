@@ -3,7 +3,6 @@ package top.dannystone.common.JedisClient;
 import com.alibaba.fastjson.JSONObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,8 +20,8 @@ public class JedisSetValueMap extends UnSupportMap {
 
     @Override
     public Object get(Object key) {
-        //todo
-        return jedisClient.smembers(key.toString());
+        Set<String> smembers = jedisClient.smembers(key.toString());
+        return smembers.size()==0?null:smembers;
     }
 
     @Nullable
@@ -31,7 +30,7 @@ public class JedisSetValueMap extends UnSupportMap {
         if (!(value instanceof Set)) {
             throw new RuntimeException("不是set");
         }
-        HashSet<String> set= (HashSet<String>) value;
+        Set<String> set= (Set<String>) value;
         List<String> stringList = set.stream().map(e -> JSONObject.toJSONString(e)).collect(Collectors.toList());
         String[] stringArray = (String[]) (stringList.toArray());
         return jedisClient.sadd(key.toString(), stringArray);

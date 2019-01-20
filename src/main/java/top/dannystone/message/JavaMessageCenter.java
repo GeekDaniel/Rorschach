@@ -20,11 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date: 2018-11-01
  * Time: 下午11:14
  */
-public class MessageCenter {
-    public static final Set<Topic> topics = new JedisSet("topics");
-    public static final Map<Topic, Set<Consumer>> topicConsumerMap = new JedisSetValueMap();
-    public static final Map<Topic, List<Message>> topicMessageMap = new JedisListValueMap();
-    public static final Map<Consumer, Integer> consumerOffsetMap = new ConcurrentHashMap<Consumer, Integer>();
+public class JavaMessageCenter extends AbstractMessageCenter {
+
+    Set<Topic> topics = new JedisSet("topics");
+    Map<Topic, Set<Consumer>> topicConsumerMap = new JedisSetValueMap();
+    Map<Topic, List<Message>> topicMessageMap = new JedisListValueMap();
+    Map<Consumer, Integer> consumerOffsetMap = new ConcurrentHashMap<Consumer, Integer>();
 
     /**
      * 订阅要做的几件事
@@ -34,13 +35,14 @@ public class MessageCenter {
      * @param consumer
      * @throws InvalidRegistException
      */
+    @Override
     public void subscirbe(Topic topic, Consumer consumer) throws InvalidRegistException, ConsumerDuplicateException {
         if (!checkSubscribe(topic, consumer)) {
             throw new InvalidRegistException("缺少合法的Topic或订阅者！");
         }
 
         Set<Consumer> consumers;
-        synchronized (MessageCenter.class) {
+        synchronized (JavaMessageCenter.class) {
             consumers = topicConsumerMap.get(topic);
             if (consumers == null) {
                 topicConsumerMap.put(topic, Sets.newConcurrentHashSet());
@@ -54,9 +56,10 @@ public class MessageCenter {
         consumers.add(consumer);
     }
 
+    @Override
     public void doProduce(Topic topic, Message message) {
         List<Message> messageList;
-        synchronized (MessageCenter.class) {
+        synchronized (JavaMessageCenter.class) {
             messageList = topicMessageMap.get(topic);
             if (messageList == null) {
                 //性能
@@ -68,32 +71,34 @@ public class MessageCenter {
     }
 
     //此处的偏移量是指个数而非索引下标。偏移量=索引下标+1
-    public List<Message> doConsume(Topic topic, Consumer consumer,Integer clientOffSet, int pollCount) {
-        if(!checkConsume(topic, consumer)||!checkSubscribed(topic,consumer )){
-           return easyError();
+    @Override
+    public List<Message> doConsume(Topic topic, Consumer consumer, Integer clientOffSet, int pollCount) {
+        if (!checkConsume(topic, consumer) || !checkSubscribed(topic, consumer)) {
+            return easyError();
         }
 
-        int serverOffSet = consumerOffsetMap.get(consumer)==null?0: consumerOffsetMap.get(consumer);
+        int serverOffSet = consumerOffsetMap.get(consumer) == null ? 0 : consumerOffsetMap.get(consumer);
         List<Message> messages = topicMessageMap.get(topic);
         //如果clientOffSet为null，说明客户端未申明偏移量，按服务器偏移量来
-        Optional<Integer> offSetOptional=FirstMeet
+        Optional<Integer> offSetOptional = FirstMeet
                 .first(clientOffSet)
                 .then(serverOffSet)
-                .meet(e->e!=null&&e<messages.size()).get();
-        if(!offSetOptional.isPresent()){
+                .meet(e -> e != null && e < messages.size()).get();
+        if (!offSetOptional.isPresent()) {
             return easyError();
         }
         Integer offset = offSetOptional.get();
-        int fromIndex=offset;
+        int fromIndex = offset;
         //越界检查
-        int toIndex = (fromIndex + pollCount)>(messages.size())?(messages.size()):(offset + pollCount);
+        int toIndex = (fromIndex + pollCount) > (messages.size()) ? (messages.size()) : (offset + pollCount);
         //消费后调整offset
         consumerOffsetMap.put(consumer, toIndex);
         return messages.subList(fromIndex, toIndex);
 
     }
 
-    public List<Message> easyError(){
+    @Override
+    public List<Message> easyError() {
         //目前校验不合法为返回空，后续改为报错
         return Lists.newArrayList();
     }

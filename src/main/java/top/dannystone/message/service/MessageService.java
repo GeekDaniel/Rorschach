@@ -2,9 +2,7 @@ package top.dannystone.message.service;
 
 import com.google.common.collect.Lists;
 import top.dannystone.message.Message;
-import top.dannystone.message.MessageCenter;
 import top.dannystone.message.Consumer;
-import top.dannystone.message.Topic;
 
 import java.util.List;
 
@@ -18,9 +16,9 @@ import java.util.List;
 public class MessageService {
     List<Message> getLeftMessagesWithOffset(Consumer consumer, long offSet){
 //        Topic topic = consumer.getTopic();
-//        List<Consumer> consumers = MessageCenter.topicConsumerMap.get(topic);
+//        List<Consumer> consumers = JavaMessageCenter.topicConsumerMap.get(topic);
 //        if(consumers.contains(consumer)){
-//            List<Message> messages = MessageCenter.topicMessageMap.get(topic);
+//            List<Message> messages = JavaMessageCenter.topicMessageMap.get(topic);
 //            return messages.subList((int)offSet, messages.size());
 //        }
         return Lists.newArrayList();

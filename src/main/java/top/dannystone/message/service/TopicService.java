@@ -1,6 +1,6 @@
 package top.dannystone.message.service;
 
-import top.dannystone.message.MessageCenter;
+import top.dannystone.message.AbstractMessageCenter;
 import top.dannystone.message.Topic;
 
 /**
@@ -12,6 +12,6 @@ import top.dannystone.message.Topic;
  */
 public class TopicService {
     void createTopic(Topic topic) {
-        MessageCenter.topics.add(topic);
+        AbstractMessageCenter.topics.add(topic);
     }
 }
